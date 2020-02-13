@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const shortid = require("shortid");
+
 const ShortUrlSchema = new mongoose.Schema({
   title: {
     type: String
@@ -14,12 +14,18 @@ const ShortUrlSchema = new mongoose.Schema({
     required: true
   },
   user_id: {
-    type: Number
+    type: mongoose.Types.ObjectId
   },
   created_at: {
     type: Date,
     default: Date.now
-  }
+  },
+  track: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Track"
+    }
+  ]
 });
 
-module.exports = mongoose.model("shortUrl", ShortUrlSchema);
+module.exports = mongoose.model("ShortUrl", ShortUrlSchema);

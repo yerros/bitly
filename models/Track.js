@@ -1,12 +1,7 @@
 const mongoose = require("mongoose");
-const uuidv4 = require("uuid/v4");
 const TrackSchema = new mongoose.Schema({
-  uuid: {
-    type: String,
-    default: uuidv4
-  },
   short_url_id: {
-    type: String
+    type: mongoose.Types.ObjectId
   },
   ip_address: {
     type: String
@@ -20,4 +15,4 @@ const TrackSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("track", TrackSchema);
+module.exports = mongoose.model("Track", TrackSchema);

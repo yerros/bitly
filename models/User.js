@@ -13,7 +13,13 @@ const UserSchema = mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  shorturls: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ShortUrl"
+    }
+  ]
 });
 
-module.exports = mongoose.model("user", UserSchema);
+module.exports = mongoose.model("User", UserSchema);

@@ -1,17 +1,61 @@
 const express = require("express");
 const bycrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const shortid = require("shortid");
 const User = require("../models/User");
+const ShortUrl = require("../models/ShortUrl");
+require("dotenv").config();
+const baseUrl = process.env.baseURI + "/go/";
 const router = express.Router();
-
 const authMiddleware = require("../middleware/auth");
 
-require("dotenv").config();
+// @route        GET /user
+// @desc         User Dashboard
+// @access       private
 
-router.get("/", authMiddleware, (req, res) => {
-  res.send("user route");
+router.get("/", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.user.id })
+      .select("-password")
+      .populate("shorturls");
+    res.json({
+      user
+    });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send("Server Error");
+  }
 });
 
+// @route        GET /shorten
+// @desc         Create new short url
+// @access       private
+router.post("/shorten", authMiddleware, async (req, res) => {
+  const { url, title } = req.body;
+  const shortUrl = title || shortid.generate();
+  if (!url) {
+    return res.status(400).json({ errors: "Something error found" });
+  }
+
+  let savetoDB = new ShortUrl({
+    user_id: req.user.id,
+    short_url: shortUrl,
+    url
+  });
+  await savetoDB.save();
+  await User.findByIdAndUpdate(
+    { _id: req.user.id },
+    { $push: { shorturls: savetoDB._id } }
+  );
+  res.json({
+    short_url: baseUrl + shortUrl,
+    url
+  });
+});
+
+// @route        POST /user/register
+// @desc         Register new user
+// @access       public
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -49,6 +93,9 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// @route        POST /user/login
+// @desc         User Login
+// @access       public
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 

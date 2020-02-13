@@ -2,18 +2,21 @@ const express = require("express");
 const shortid = require("shortid");
 require("dotenv").config();
 const baseUrl = process.env.baseURI + "/go/";
-
+const router = express.Router();
 // model
 const ShortUrl = require("../models/ShortUrl");
 const Track = require("../models/Track");
 
-//
-const router = express.Router();
-// router
+// @route        GET /
+// @desc         Index
+// @access       public
 router.get("/", (req, res) => {
   res.json({ msg: "Public Routes" });
 });
 
+// @route        GET /shorten
+// @desc         Create new short url
+// @access       public
 router.post("/shorten", async (req, res) => {
   const shortUrl = shortid.generate();
   const oriUrl = req.body.url;
@@ -30,6 +33,9 @@ router.post("/shorten", async (req, res) => {
   });
 });
 
+// @route        GET /go/:id
+// @desc         Redirect to Original Url
+// @access       public
 router.get("/go/:id", async (req, res) => {
   const id = req.params.id;
   try {
@@ -49,6 +55,10 @@ router.get("/go/:id", async (req, res) => {
     });
 
     await tracking.save();
+    await ShortUrl.findByIdAndUpdate(
+      { _id: short_url_id },
+      { $push: { track: tracking._id } }
+    );
     res.redirect(redirectLink.url);
   } catch (error) {
     console.log(error);
