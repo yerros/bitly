@@ -4,10 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "server": "nodemon index.js",
+    "client": "npm start --prefix clients",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
@@ -16,5 +20,8 @@
     "shortid": "^2.2.15",
     "uuid": "^3.4.0",
     "valid-url": "^1.0.9"
+  },
+  "devDependencies": {
+    "concurrently": "^5.1.0"
   }
 }
