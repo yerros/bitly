@@ -8,6 +8,7 @@ app.use(express.json());
 connectDB();
 app.use("/", require("./routes/public"));
 app.use("/user", require("./routes/user"));
+app.use("/track", require("./routes/track"));
 
 const port = process.env.PORT || 5000;
 app.listen(port, err => {

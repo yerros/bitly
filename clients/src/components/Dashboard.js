@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import history from "../history";
+import ItemList from "./ItemList";
 
 export default class Dashboard extends Component {
   constructor() {
@@ -9,7 +10,7 @@ export default class Dashboard extends Component {
       shorten: "",
       isOpen: false,
       showShorten: false,
-      listUrl: "",
+      listUrl: [],
       inputShorten: ""
     };
     this.handleChange = this.handleChange.bind(this);
@@ -30,40 +31,39 @@ export default class Dashboard extends Component {
     return history.push("/");
   }
 
-  async handleSubmit(event) {
+  handleSubmit(event) {
     const headers = {
       headers: { secret_token: localStorage.getItem("secret_token") }
     };
-    await axios
+    axios
       .post(
         "http://localhost:5001/user/shorten",
         { url: this.state.inputShorten },
         headers
       )
-      .then(res =>
+      .then(res => {
         this.setState({
           shorten: res.data.short_url,
           showShorten: true,
           inputShorten: ""
-        })
-      );
+        });
+        return history.push("/");
+      });
     this.getList();
     event.preventDefault();
   }
 
   getList() {
-    console.log("render");
     const headers = {
       headers: { secret_token: localStorage.getItem("secret_token") }
     };
-    axios.get("http://localhost:5001/user", headers).then(res =>
+    axios.get("http://localhost:5001/user/dashboard", headers).then(res =>
       this.setState({
         listUrl: res.data.user.shorturls
       })
     );
   }
   render() {
-    console.log(this.state.listUrl);
     return (
       <div>
         <nav
@@ -115,26 +115,11 @@ export default class Dashboard extends Component {
               <h6 className="border-bottom border-gray pb-2 mb-0">
                 Suggestions
               </h6>
-              {this.state.listUrl &&
-                this.state.listUrl.map(item => {
-                  return (
-                    <div className="media text-muted pt-3" key={item._id}>
-                      <div className="mx-2">
-                        <i className="fas fa-chart-bar"></i>
-                        <p>{item.track.length}</p>
-                      </div>
-                      <div className="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                        <div className="d-flex justify-content-between align-items-center w-100">
-                          <strong className="text-gray-dark">
-                            http://localhost:5001/go/{item.short_url}
-                          </strong>
-                          <a href="/">Follow</a>
-                        </div>
-                        <span className="d-block">{item.url}</span>
-                      </div>
-                    </div>
-                  );
-                })}
+              {this.state.listUrl.map((item, i) => (
+                <div key={i}>
+                  <ItemList data={item} />
+                </div>
+              ))}
               <small className="d-block text-right mt-3">
                 <a href="/">All suggestions</a>
               </small>

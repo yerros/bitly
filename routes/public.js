@@ -21,7 +21,6 @@ router.post("/shorten", async (req, res) => {
   const shortUrl = shortid.generate();
   const oriUrl = req.body.url;
   const length = await ShortUrl.countDocuments();
-  console.log(length);
   let savetoDB = new ShortUrl({
     short_url: shortUrl,
     url: oriUrl
@@ -36,12 +35,12 @@ router.post("/shorten", async (req, res) => {
 // @route        GET /go/:id
 // @desc         Redirect to Original Url
 // @access       public
-router.get("/go/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   const id = req.params.id;
   try {
     let redirectLink = await ShortUrl.findOne({ short_url: id });
     if (!redirectLink) {
-      return res.status(500).send("Server Error");
+      return res.status(500).send("Server Error 1");
     }
 
     const short_url_id = redirectLink._id;
@@ -62,7 +61,7 @@ router.get("/go/:id", async (req, res) => {
     res.redirect(redirectLink.url);
   } catch (error) {
     console.log(error);
-    res.status(500).send("Server Error");
+    res.status(500).send("Server Error 1");
   }
 });
 

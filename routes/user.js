@@ -5,7 +5,7 @@ const shortid = require("shortid");
 const User = require("../models/User");
 const ShortUrl = require("../models/ShortUrl");
 require("dotenv").config();
-const baseUrl = process.env.baseURI + "/go/";
+const baseUrl = process.env.baseURI;
 const router = express.Router();
 const authMiddleware = require("../middleware/auth");
 
@@ -13,17 +13,46 @@ const authMiddleware = require("../middleware/auth");
 // @desc         User Dashboard
 // @access       private
 
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/dashboard", authMiddleware, async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.user.id })
       .select("-password")
-      .populate("shorturls");
+      .populate({ path: "shorturls", options: { sort: { created_at: -1 } } });
     res.json({
       user
     });
   } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error 1");
+  }
+});
+
+// @route        Put /user/:id
+// @desc         Edit Shorturl
+// @access       private
+router.put("/:id", authMiddleware, async (req, res) => {
+  try {
+    await ShortUrl.findOneAndUpdate(
+      { short_url: req.params.id },
+      { $set: { short_url: req.body.name } }
+    );
+    res.status(200).json({ msg: "Update Success" });
+  } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res.status(500).send("Server Error 2");
+  }
+});
+
+// @route        DELETE /user/:id
+// @desc         Delete Shorturl
+// @access       private
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    await ShortUrl.findOneAndDelete({ short_url: req.params.id });
+    res.status(200).json({ msg: "Delete Success" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send("Server Error 3");
   }
 });
 
@@ -121,7 +150,7 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).send("Server Error 5");
   }
 });
 
