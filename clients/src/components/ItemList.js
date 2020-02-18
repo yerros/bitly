@@ -26,6 +26,7 @@ export default function ItemList(props) {
       }
     }
   }
+
   return (
     <div key={item._id}>
       <div className="media text-muted pt-3">
@@ -54,7 +55,9 @@ export default function ItemList(props) {
               <i title="Delete" className="fas fa-trash"></i>
             </button>
           </div>
-          <span className="d-block">{item.url}</span>
+          <span className="d-block text-truncate" style={{ maxWidth: 300 }}>
+            {item.url}
+          </span>
         </div>
       </div>
       <ModalEdit data={item} />

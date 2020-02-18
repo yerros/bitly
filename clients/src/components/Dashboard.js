@@ -1,25 +1,29 @@
 import React, { Component } from "react";
 import axios from "axios";
 import history from "../history";
-import ItemList from "./ItemList";
+import ManageLink from "./ManageLink";
 
 export default class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
       shorten: "",
-      isOpen: false,
+      isManage: true,
       showShorten: false,
+      tracks: [],
       listUrl: [],
+      listLink: [],
       inputShorten: ""
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
+    this.handleScreen = this.handleScreen.bind(this);
   }
 
   componentDidMount() {
     this.getList();
+    this.getTrack();
   }
   handleChange(event) {
     const name = event.target.name;
@@ -53,6 +57,9 @@ export default class Dashboard extends Component {
     event.preventDefault();
   }
 
+  handleScreen() {
+    this.setState({ isManage: !this.state.isManage });
+  }
   getList() {
     const headers = {
       headers: { secret_token: localStorage.getItem("secret_token") }
@@ -60,6 +67,17 @@ export default class Dashboard extends Component {
     axios.get("http://localhost:5001/user/dashboard", headers).then(res =>
       this.setState({
         listUrl: res.data.user.shorturls
+      })
+    );
+  }
+  getTrack() {
+    const headers = {
+      headers: { secret_token: localStorage.getItem("secret_token") }
+    };
+    axios.get("http://localhost:5001/user/track", headers).then(res =>
+      this.setState({
+        tracks: res.data.links,
+        listLink: res.data.links
       })
     );
   }
@@ -79,6 +97,18 @@ export default class Dashboard extends Component {
             </button>
           </div>
         </nav>
+
+        <div className="nav-scroller bg-white shadow-sm">
+          <nav className="nav nav-underline">
+            <span className="nav-link active">Dashboard</span>
+            <button
+              className="btn btn-outline text-primary nav-link"
+              onClick={this.handleScreen}
+            >
+              Manage Link
+            </button>
+          </nav>
+        </div>
         <section>
           <div className="container">
             <div className="row">
@@ -110,21 +140,7 @@ export default class Dashboard extends Component {
           </div>
         </section>
         <section>
-          <div className="container">
-            <div className="my-3 p-3 bg-white rounded shadow">
-              <h6 className="border-bottom border-gray pb-2 mb-0">
-                Suggestions
-              </h6>
-              {this.state.listUrl.map((item, i) => (
-                <div key={i}>
-                  <ItemList data={item} />
-                </div>
-              ))}
-              <small className="d-block text-right mt-3">
-                <a href="/">All suggestions</a>
-              </small>
-            </div>
-          </div>
+          <ManageLink dataSource={this.state.listLink} />
         </section>
       </div>
     );

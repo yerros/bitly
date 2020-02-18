@@ -2,12 +2,16 @@ const express = require("express");
 const bycrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const shortid = require("shortid");
+const moment = require("moment");
 const User = require("../models/User");
 const ShortUrl = require("../models/ShortUrl");
 require("dotenv").config();
 const baseUrl = process.env.baseURI;
 const router = express.Router();
 const authMiddleware = require("../middleware/auth");
+
+const today = moment().startOf("day");
+const yesterday = moment(today).endOf("day");
 
 // @route        GET /user
 // @desc         User Dashboard
@@ -20,6 +24,37 @@ router.get("/dashboard", authMiddleware, async (req, res) => {
       .populate({ path: "shorturls", options: { sort: { created_at: -1 } } });
     res.json({
       user
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error 1");
+  }
+});
+
+// @route        GET /user/track
+// @desc         User tracking
+// @access       private
+
+router.get("/track", authMiddleware, async (req, res) => {
+  try {
+    if (req.query.filter == "today") {
+      const thisDay = await ShortUrl.find({
+        created_at: { $gte: today, $lte: yesterday }
+      });
+      res.send(thisDay);
+    }
+    if (req.query.filter == "month") {
+      return res.send("month");
+    }
+    if (req.query.filter == "year") {
+      return res.send("year");
+    }
+    const links = await ShortUrl.find({ user_id: req.user.id }).populate({
+      path: "track",
+      options: { sort: { created_at: -1 } }
+    });
+    res.json({
+      links
     });
   } catch (err) {
     console.log(err);
