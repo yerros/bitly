@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import Select from "react-select";
 import { today, yesterday, week, month, year } from "../moment";
 import ItemList from "./ItemList";
+import moment from "moment";
 export default function ManageLink(props) {
   const [selected, setSelected] = useState();
   const [data, setData] = useState("");
   const options = [
     { value: "all", label: "All Day" },
-    { value: yesterday, label: "Clicked today" },
+    { value: today, label: "Clicked today" },
     { value: week, label: "Clicked this Week" },
     { value: month, label: "Clicked this Month" },
     { value: year, label: "Clicked this Year" }
@@ -16,15 +17,15 @@ export default function ManageLink(props) {
     props.dataSource.map(item => {
       return {
         ...item,
-        track: item.track.filter(
-          item => item.created_at >= today && item.created_at <= date.value
-        )
+        track: item.track.filter(item => {
+          return moment(item.created_at).isBetween(date.value, yesterday);
+        })
       };
     });
 
   const handleSelect = selected => {
     setSelected(selected);
-    if (selected.value == "all") {
+    if (selected.value === "all") {
       const dataProps = props.dataSource;
       setData(dataProps);
     } else {

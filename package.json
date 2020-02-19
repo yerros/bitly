@@ -5,9 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon index.js",
-    "server": "nodemon index.js",
-    "client": "npm start --prefix clients",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "server": "nodemon index.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

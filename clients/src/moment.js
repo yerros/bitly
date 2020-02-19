@@ -9,13 +9,13 @@ export const yesterday = moment()
   .format();
 
 export const week = moment(today)
-  .add(7, "days")
+  .subtract(7, "days")
   .format();
 
 export const month = moment(today)
-  .add(30, "days")
+  .subtract(30, "days")
   .format();
 
 export const year = moment(today)
-  .add(365, "days")
+  .subtract(365, "days")
   .format();
