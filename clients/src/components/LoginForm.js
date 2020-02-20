@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import history from "../history";
 import axios from "axios";
+import { BASE_URL } from "../config";
 class LoginForm extends Component {
   constructor() {
     super();
@@ -21,7 +22,7 @@ class LoginForm extends Component {
   handleSubmit(event) {
     const { email, password } = this.state;
     axios
-      .post("http://localhost:5001/user/login", {
+      .post(`${BASE_URL}/user/login`, {
         email: email,
         password: password
       })

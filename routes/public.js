@@ -1,7 +1,7 @@
 const express = require("express");
 const shortid = require("shortid");
 require("dotenv").config();
-const baseUrl = process.env.baseURI + "/go/";
+const baseUrl = process.env.baseURI;
 const router = express.Router();
 // model
 const ShortUrl = require("../models/ShortUrl");

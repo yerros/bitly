@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import history from "../history";
 import ManageLink from "./ManageLink";
+import { BASE_URL } from "../config";
 
 export default class Dashboard extends Component {
   constructor() {
@@ -22,7 +23,7 @@ export default class Dashboard extends Component {
   }
 
   componentDidMount() {
-    this.getList();
+    // this.getList();
     this.getTrack();
   }
   handleChange(event) {
@@ -41,7 +42,7 @@ export default class Dashboard extends Component {
     };
     axios
       .post(
-        "http://localhost:5001/user/shorten",
+        `${BASE_URL}/user/shorten`,
         { url: this.state.inputShorten },
         headers
       )
@@ -60,21 +61,21 @@ export default class Dashboard extends Component {
   handleScreen() {
     this.setState({ isManage: !this.state.isManage });
   }
-  getList() {
-    const headers = {
-      headers: { secret_token: localStorage.getItem("secret_token") }
-    };
-    axios.get("http://localhost:5001/user/dashboard", headers).then(res =>
-      this.setState({
-        listUrl: res.data.user.shorturls
-      })
-    );
-  }
+  // getList() {
+  //   const headers = {
+  //     headers: { secret_token: localStorage.getItem("secret_token") }
+  //   };
+  //   axios.get(`${BASE_URL}/user/dashboard`, headers).then(res =>
+  //     this.setState({
+  //       listUrl: res.data.user.shorturls
+  //     })
+  //   );
+  // }
   getTrack() {
     const headers = {
       headers: { secret_token: localStorage.getItem("secret_token") }
     };
-    axios.get("http://localhost:5001/user/track", headers).then(res =>
+    axios.get(`${BASE_URL}/user/track`, headers).then(res =>
       this.setState({
         tracks: res.data.links,
         listLink: res.data.links

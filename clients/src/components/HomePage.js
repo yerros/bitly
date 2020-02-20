@@ -4,6 +4,7 @@ import axios from "axios";
 import Modal from "react-modal";
 import SignUpForm from "./SignUpForm";
 import LoginForm from "./LoginForm";
+import { BASE_URL } from "../config";
 Modal.setAppElement("#root");
 
 export default class HomePage extends Component {
@@ -25,7 +26,7 @@ export default class HomePage extends Component {
 
   handleSubmit(event) {
     axios
-      .post("http://localhost:5001/shorten", { url: this.state.inputShorten })
+      .post(`${BASE_URL}/shorten`, { url: this.state.inputShorten })
       .then(res =>
         this.setState({
           shorten: res.data.short_url,
