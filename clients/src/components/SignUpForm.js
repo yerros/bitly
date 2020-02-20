@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
+import history from "../history";
+import { BASE_URL } from "../config";
 
 class SignUpForm extends Component {
   constructor() {
@@ -23,7 +25,7 @@ class SignUpForm extends Component {
   handleSubmit(event) {
     const { name, email, password } = this.state;
     axios
-      .post("http://localhost:5001/user/register", {
+      .post(`${BASE_URL}/user/register`, {
         name: name,
         email: email,
         password: password
@@ -31,7 +33,7 @@ class SignUpForm extends Component {
       .then(res => {
         localStorage.setItem("secret_token", res.data.token);
         alert(res.data.msg);
-        this.props.history.push("/dashboard");
+        history.push("/dashboard");
       });
     event.preventDefault();
   }

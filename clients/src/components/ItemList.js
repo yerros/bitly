@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import history from "../history";
 import ModalEdit from "./ModalEdit";
+import { BASE_URL } from "../config";
 
 export default function ItemList(props) {
   const item = props.data || [];
@@ -14,7 +15,7 @@ export default function ItemList(props) {
       };
       if (data.short_url) {
         axios
-          .delete(`http://localhost:5001/user/${data.short_url}`, headers)
+          .delete(`${BASE_URL}/user/${data.short_url}`, headers)
           .then(res => {
             if (res) {
               alert("Sukses");
@@ -37,8 +38,8 @@ export default function ItemList(props) {
         <div className="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
           <div className="d-flex justify-content-between align-items-center w-100">
             <strong className="text-gray-dark">
-              <a href={`http://localhost:5001/${item.short_url}`}>
-                http://localhost:5001/{item.short_url}
+              <a href={`${BASE_URL}/${item.short_url}`}>
+                {BASE_URL}/{item.short_url}
               </a>
             </strong>
             <button

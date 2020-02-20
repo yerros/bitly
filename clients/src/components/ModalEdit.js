@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import history from "../history";
+import { BASE_URL } from "../config";
 
 export default class ModalEdit extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ export default class ModalEdit extends Component {
     if (this.state.newShortUrl) {
       axios
         .put(
-          `http://localhost:5001/user/${this.state.shortUrl}`,
+          `${BASE_URL}/user/${this.state.shortUrl}`,
           { name: this.state.newShortUrl },
           headers
         )

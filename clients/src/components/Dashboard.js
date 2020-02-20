@@ -54,7 +54,7 @@ export default class Dashboard extends Component {
         });
         return history.push("/");
       });
-    this.getList();
+    this.getTrack();
     event.preventDefault();
   }
 
